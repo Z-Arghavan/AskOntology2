@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MOAF-DiT · Ontology Explorer</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="logo">MOAF-<span>DiT</span></div>
+    <div class="logo-sub">Neuro-Symbolic Ontology Explorer</div>
+
+    <nav class="nav">
+      <div class="nav-label">Setup</div>
+      <button class="nav-btn active" id="nav-setup" onclick="App.nav('setup')">
+        <span class="nav-num" id="num-setup">1</span> Configure &amp; Upload
+      </button>
+      <div class="nav-label">Explore</div>
+      <button class="nav-btn disabled" id="nav-ask" onclick="App.nav('ask')">
+        <span class="nav-num" id="num-ask">2</span> Ask the Schema
+      </button>
+      <div class="nav-label">Admin</div>
+      <button class="nav-btn" id="nav-admin" onclick="App.nav('admin')">
+        <span class="nav-num">⚙</span> Analytics
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div id="onto-badge" class="onto-badge" style="display:none"></div>
+      <div id="session-id-display" class="session-display"></div>
+      <div class="sidebar-note">All processing runs in your browser.<br>Your API key never leaves your machine.</div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- ── Setup Panel ── -->
+    <section class="panel active" id="panel-setup">
+      <h1 class="panel-title">Configure Explorer</h1>
+      <p class="panel-sub">Enter your Gemini API key, upload a Turtle (.ttl) ontology, then build the semantic index using Gemini embeddings.</p>
+
+      <div class="setup-card">
+        <div class="setup-step-head"><span class="step-circle">1</span><strong>Gemini API Key</strong></div>
+        <div class="field">
+          <label>API Key</label>
+          <div class="input-row">
+            <input type="password" id="api-key" placeholder="AIzaSy…"/>
+            <button class="btn btn-primary" onclick="App.saveKey()">Save</button>
+          </div>
+          <p class="hint">Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>. Uses <code>gemini-2.0-flash-lite</code> + <code>text-embedding-004</code>.</p>
+        </div>
+        <div id="key-status" class="status-line"></div>
+      </div>
+
+      <div class="setup-card">
+        <div class="setup-step-head"><span class="step-circle">2</span><strong>Upload Ontology</strong></div>
+        <div id="dropzone" class="dropzone" onclick="document.getElementById('file-in').click()">
+          <div class="dz-icon">📄</div>
+          <p><strong>Click or drag &amp; drop</strong> a Turtle (.ttl) file</p>
+          <p class="dz-hint">Any OWL ontology in Turtle format</p>
+        </div>
+        <input type="file" id="file-in" accept=".ttl" onchange="App.handleFile(this)"/>
+        <div id="parse-status" class="status-line"></div>
+      </div>
+
+      <div class="setup-card" id="index-box" style="display:none">
+        <div class="setup-step-head"><span class="step-circle">3</span><strong>Build Semantic Index</strong></div>
+        <div id="onto-stats" class="stats-row"></div>
+        <div class="progress-wrap">
+          <div class="progress-header">
+            <span>Embedding entity cards with Gemini</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+          <div class="progress-log" id="prog-log">Waiting…</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="index-btn" onclick="App.buildIndex()">🚀 Build index</button>
+          <button class="btn btn-secondary" onclick="App.skipEmbeddings()">String-match only (no API calls)</button>
+        </div>
+        <div id="index-status" class="status-line"></div>
+      </div>
+    </section>
+
+    <!-- ── Ask Panel ── -->
+    <section class="panel" id="panel-ask">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <div>
+          <h1 class="panel-title" style="margin-bottom:4px">Ask the Schema</h1>
+          <p class="panel-sub" style="margin-bottom:0">Ask any question. Follow-ups remember context. Each answer can be annotated with your opinion.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="App.newConversation()" title="Clear conversation and start fresh" style="flex-shrink:0;margin-top:6px">
+          🔄 New conversation
+        </button>
+      </div>
+
+      <!-- Memory indicator -->
+      <div id="conv-indicator" class="conv-indicator" style="display:none"></div>
+
+      <!-- Question input -->
+      <div class="ask-wrap">
+        <textarea class="q-input" id="q-main"
+          placeholder="e.g.  Does a Defect class exist?&#10;       What properties does WorkOrder have?&#10;       What do you suggest instead?  (follow-up)"></textarea>
+        <button class="ask-send" id="ask-btn" onclick="App.ask()">Ask ↗</button>
+      </div>
+      <p class="ask-hint">Ctrl+Enter to send · Follow-up questions keep context from previous answers</p>
+      <div id="ask-status" class="status-line"></div>
+
+      <!-- Live result area (current question) -->
+      <div id="cov-banner" class="banner" style="display:none">
+        <span class="ban-icon" id="ban-icon"></span>
+        <div class="ban-body">
+          <div class="ban-title" id="ban-title"></div>
+          <div class="ban-exp" id="ban-exp"></div>
+        </div>
+      </div>
+      <div id="sim-panel"></div>
+      <div id="ent-panel" class="ent-section"></div>
+      <div id="ans-panel"></div>
+
+      <!-- Propose form -->
+      <div id="propose-wrap" style="display:none">
+        <div class="propose-box">
+          <h4>📝 Propose a missing concept</h4>
+          <p>These concepts appear absent. Select a suggestion or enter your own — saved to the analytics log for the ontology author.</p>
+          <div id="miss-chips-row" class="miss-chips"></div>
+          <div class="p-grid">
+            <div class="p-field"><label>Concept name (CamelCase)</label><input type="text" id="p-name" placeholder="e.g. MaterialShortage"/></div>
+            <div class="p-field"><label>Type</label>
+              <select id="p-type"><option>owl:Class</option><option>owl:ObjectProperty</option><option>owl:DatatypeProperty</option></select>
+            </div>
+            <div class="p-field"><label>Suggested parent</label><input type="text" id="p-parent" placeholder="e.g. WorkOrder"/></div>
+            <div class="p-field"><label>Your question</label><input type="text" id="p-ctx" readonly/></div>
+          </div>
+          <div class="p-field full" style="margin-bottom:10px"><label>Description</label><textarea id="p-desc" rows="2" placeholder="What should this concept represent?"></textarea></div>
+          <div class="p-field full" style="margin-bottom:10px"><label>Example usage</label><input type="text" id="p-ex" placeholder="e.g. WorkOrder :hasShortage MaterialShortage"/></div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-primary" onclick="App.submitProposal()">Submit proposal</button>
+            <span id="p-ok" class="success-msg"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Session conversation log -->
+      <div class="session-log-wrap">
+        <div class="session-log-header">
+          <span>📋 Conversation log — this session</span>
+          <span id="log-count" class="log-count"></span>
+        </div>
+        <div id="session-log" class="session-log"></div>
+      </div>
+    </section>
+
+    <!-- ── Admin Panel ── -->
+    <section class="panel" id="panel-admin">
+      <div id="admin-gate" class="admin-gate">
+        <h2>🔒 Admin dashboard</h2>
+        <p>Enter the admin password to view the Q&amp;A analytics and validation log.</p>
+        <div class="input-row" style="max-width:360px;margin:0 auto">
+          <input type="password" id="admin-pw" placeholder="Password"/>
+          <button class="btn btn-primary" onclick="Admin.login()">Enter</button>
+        </div>
+        <div id="admin-err" class="err-msg" style="display:none"></div>
+      </div>
+
+      <div id="admin-dash" style="display:none">
+        <div class="admin-header">
+          <h1 class="panel-title" style="margin:0">Analytics dashboard</h1>
+          <div class="btn-row" style="margin:0">
+            <button class="btn btn-secondary" onclick="Admin.exportLog('csv')">⬇ CSV</button>
+            <button class="btn btn-secondary" onclick="Admin.exportLog('json')">⬇ JSON</button>
+            <button class="btn btn-danger" onclick="Admin.logout()">Log out</button>
+          </div>
+        </div>
+        <div id="a-stats" class="admin-stats"></div>
+        <hr class="divider"/>
+        <h3>❌ Most-requested missing concepts</h3>
+        <p class="section-hint">Concepts users asked about that are absent — use this to guide ontology extension.</p>
+        <div id="miss-freq-list"></div>
+        <hr class="divider"/>
+        <h3>📋 Full Q&amp;A log</h3>
+        <div class="log-wrap">
+          <table class="log-tbl">
+            <thead><tr><th>Timestamp</th><th>Session</th><th>Question</th><th>Coverage</th><th>Missing</th><th>Answer</th></tr></thead>
+            <tbody id="log-tbody"></tbody>
+          </table>
+        </div>
+        <hr class="divider"/>
+        <h3>📝 User proposals &amp; notes</h3>
+        <div id="proposals-out"></div>
+        <div class="btn-row" style="margin-top:20px">
+          <button class="btn btn-danger" onclick="Admin.clearLog()">🗑 Clear local data</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/ontology.js"></script>
+<script src="js/embeddings.js"></script>
+<script src="js/graphrag.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
