@@ -143,6 +143,7 @@ const App = (() => {
       const entry = _makeEntry(question, 'fully_covered', [], direct, 'direct');
       UI.renderCoverage('fully_covered', 'Direct schema answer');
       UI.renderAnswer(direct);
+      UI.showProposeForm([], '', question);
       _addToLog(entry);
       UI.$('ask-btn').disabled = false;
       Storage.log(question, 'fully_covered', [], direct, 'direct', state.ontologyName);
@@ -206,9 +207,8 @@ const App = (() => {
         UI.renderCoverage(cov, json?.coverage_explanation || '');
         UI.renderAnswer(answer);
 
-        if (cov !== 'fully_covered') {
-          UI.showProposeForm(json?.missing_concepts || [], json?.suggested_parent || '', question);
-        }
+        // Always show propose form — users can suggest improvements even for covered concepts
+        UI.showProposeForm(json?.missing_concepts || [], json?.suggested_parent || '', question);
 
         // ── Add to session log ──
         const entry = _makeEntry(question, cov, json?.missing_concepts || [], answer, 'gemini');
@@ -229,6 +229,7 @@ const App = (() => {
         const entry = _makeEntry(question, cov, [], '', 'string-only');
         _addToLog(entry);
         Storage.log(question, cov, [], '', 'string-only', state.ontologyName);
+        UI.showProposeForm([], '', question);
       }
     } else {
       const cov = maxScore >= CFG.THRESH_FULL    ? 'fully_covered'    :
@@ -237,6 +238,7 @@ const App = (() => {
       const entry = _makeEntry(question, cov, [], '', 'string-only');
       _addToLog(entry);
       Storage.log(question, cov, [], '', 'string-only', state.ontologyName);
+      UI.showProposeForm([], '', question);
     }
 
     UI.setStatus('ask-status', '');
