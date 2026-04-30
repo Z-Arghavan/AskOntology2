@@ -19,8 +19,8 @@ const CFG = {
 
   /* ── Supabase (cross-user persistent storage)
      Leave empty strings to use localStorage only. */
-  SUPABASE_URL      : '',
-  SUPABASE_ANON_KEY : '',
+  SUPABASE_URL      : 'https://zzyfmyghmswfrvyhmpoh.supabase.co',
+  SUPABASE_ANON_KEY : 'sb_publishable_ZBAisXNJ19zCf0Y24ppUPA_VqFg3Bhj',
 
   /* ── Google Sheets (optional backup) ──── */
   SHEET_URL : '',
