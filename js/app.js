@@ -74,7 +74,7 @@ const App = (() => {
   }
 
   /* ── Build embedding index ── */
-  async function buildIndex() {
+ async function buildIndex() {
     if (!state.onto) { alert('Upload an ontology file first.'); return; }
     const apiKey = localStorage.getItem(CFG.KEY_APIKEY) || '';
     if (!apiKey) { alert('Please save your Gemini API key first.'); return; }
@@ -95,7 +95,18 @@ const App = (() => {
       UI.unlockNav('nav-ask');
       setTimeout(() => nav('ask'), 800);
     } catch (e) {
-      UI.setStatus('index-status', '<span style="color:var(--red)">⚠ Error: ' + e.message + '</span>');
+      // Embedding API not available — auto fall back to string-match silently
+      UI.setStatus('index-status',
+        '<span style="color:var(--amber)">⚠ Embedding API unavailable — switched to string-match automatically. You can still ask questions.</span>'
+      );
+      UI.$('prog-fill').style.width = '100%';
+      UI.$('prog-pct').textContent  = 'N/A';
+      UI.$('prog-log').textContent  = 'String-match mode active — Gemini answers still work normally';
+      state.useEmbeddings = false;
+      UI.$('num-setup').textContent = '✓';
+      UI.$('nav-setup').classList.add('done');
+      UI.unlockNav('nav-ask');
+      setTimeout(() => nav('ask'), 800);
     }
     UI.$('index-btn').disabled = false;
   }
