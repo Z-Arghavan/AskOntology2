@@ -19,7 +19,7 @@
 9. [Your session log](#9-your-session-log)
 10. [What happens to your questions](#10-what-happens-to-your-questions)
 11. [Tips for better results](#11-tips-for-better-results)
-12. [Frequently asked questions](#12-frequently-asked-questions)
+
 
 ---
 
