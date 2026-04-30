@@ -12,7 +12,7 @@ const CFG = {
   // 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent'
   // 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-04-17:generateContent'
 
-  GEMINI_EMB : 'https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004',
+  GEMINI_EMB : 'https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-exp-03-07',
 
   /* ── Admin password — change this ──────── */
   ADMIN_PASS : 'moaf2025',
