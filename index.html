@@ -125,24 +125,75 @@
 
       <!-- Propose form -->
       <div id="propose-wrap" style="display:none">
-        <div class="propose-box">
-          <h4>📝 Propose a missing concept</h4>
-          <p>These concepts appear absent. Select a suggestion or enter your own — saved to the analytics log for the ontology author.</p>
-          <div id="miss-chips-row" class="miss-chips"></div>
-          <div class="p-grid">
-            <div class="p-field"><label>Concept name (CamelCase)</label><input type="text" id="p-name" placeholder="e.g. MaterialShortage"/></div>
-            <div class="p-field"><label>Type</label>
-              <select id="p-type"><option>owl:Class</option><option>owl:ObjectProperty</option><option>owl:DatatypeProperty</option></select>
+        <div class="propose-card">
+
+          <!-- Header -->
+          <div class="propose-header">
+            <div class="propose-header-icon">💡</div>
+            <div>
+              <div class="propose-header-title">Have a better idea?</div>
+              <div class="propose-header-sub">The aim of this step is to <strong>validate and optimise</strong> the MOAF-DiT ontology. Suggest a class or property, whether it's missing, could be renamed, merged, or better defined.</div>
             </div>
-            <div class="p-field"><label>Suggested parent</label><input type="text" id="p-parent" placeholder="e.g. WorkOrder"/></div>
-            <div class="p-field"><label>Your question</label><input type="text" id="p-ctx" readonly/></div>
           </div>
-          <div class="p-field full" style="margin-bottom:10px"><label>Description</label><textarea id="p-desc" rows="2" placeholder="What should this concept represent?"></textarea></div>
-          <div class="p-field full" style="margin-bottom:10px"><label>Example usage</label><input type="text" id="p-ex" placeholder="e.g. WorkOrder :hasShortage MaterialShortage"/></div>
-          <div class="btn-row" style="margin-top:14px">
-            <button class="btn btn-primary" onclick="App.submitProposal()">Submit proposal</button>
+
+          <!-- AI suggestion chips -->
+          <div id="miss-chips-row" class="miss-chips" style="margin-bottom:6px"></div>
+
+          <!-- Concept name -->
+          <div class="pf">
+            <label class="pf-label">Proposed concept name <span class="pf-req">*</span></label>
+            <input type="text" id="p-name" class="pf-input" placeholder="e.g. SolderPasteInspection"/>
+          </div>
+
+          <!-- Type + Parent row -->
+          <div class="pf-row">
+            <div class="pf pf-half">
+              <label class="pf-label">Type <span class="pf-req">*</span></label>
+              <select id="p-type" class="pf-input pf-select">
+                <option value="owl:Class">Class</option>
+                <option value="owl:ObjectProperty">Object property</option>
+                <option value="owl:DatatypeProperty">Data property</option>
+              </select>
+            </div>
+            <div class="pf pf-half">
+              <label class="pf-label">Parent / related concept</label>
+              <input type="text" id="p-parent" class="pf-input" placeholder="e.g. QualityTest"/>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="pf">
+            <label class="pf-label">Description</label>
+            <textarea id="p-desc" class="pf-input pf-textarea" rows="3"
+              placeholder="What does this concept represent? Why is it suggested? Can you provide an example?"></textarea>
+          </div>
+
+          <!-- Example usage -->
+          <div class="pf">
+            <label class="pf-label">Example usage</label>
+            <input type="text" id="p-ex" class="pf-input"
+              placeholder="e.g. A SolderPasteInspection is performed before reflow…"/>
+          </div>
+
+          <!-- Additional notes -->
+          <div class="pf">
+            <label class="pf-label">Additional notes</label>
+            <textarea id="p-notes" class="pf-input pf-textarea" rows="2"
+              placeholder="Anything else the maintainers should know"></textarea>
+          </div>
+
+          <!-- Hidden context field -->
+          <input type="hidden" id="p-ctx"/>
+
+          <!-- Submit row -->
+          <div class="propose-submit-row">
             <span id="p-ok" class="success-msg"></span>
+            <button class="propose-submit-btn" onclick="App.submitProposal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit proposal
+            </button>
           </div>
+
         </div>
       </div>
 

@@ -271,12 +271,18 @@ const App = (() => {
       parent:  UI.$('p-parent').value.trim(),
       desc:    UI.$('p-desc').value.trim(),
       example: UI.$('p-ex').value.trim(),
+      notes:   UI.$('p-notes') ? UI.$('p-notes').value.trim() : '',
       ctx:     UI.$('p-ctx').value,
     };
     await Storage.saveProposal(proposal);
+    // Clear form fields
+    ['p-name','p-parent','p-desc','p-ex','p-notes'].forEach(id => {
+      const el = UI.$(id); if (el) el.value = '';
+    });
+    document.querySelectorAll('.miss-chip').forEach(c => c.classList.remove('sel'));
     const ok = UI.$('p-ok');
-    ok.textContent = '✓ Proposal saved!';
-    setTimeout(() => { ok.textContent = ''; }, 3000);
+    ok.textContent = '✓ Proposal saved! Thank you.';
+    setTimeout(() => { ok.textContent = ''; }, 4000);
   }
 
   /* ── Helpers ── */
