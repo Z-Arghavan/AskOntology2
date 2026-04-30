@@ -110,11 +110,11 @@ QUESTION: ${question}`;
   /* ── Call Gemini with full conversation history ───────────────────────
      history = [{role:'user'|'model', text:'...'}]
      systemInstruction = string (ontology context, sent once)           */
-  async function callGemini(userPrompt, apiKey, history = [], systemInstruction = '') {
-    // Build contents array: past turns + current user message
+async function callGemini(userPrompt, apiKey, history = [], systemInstruction = '') {
     const contents = [];
 
-    // Add conversation history (capped to MAX_HISTORY_TURNS pairs)
+    // Prepend system instruction into the first user message instead of
+    // using the system_instruction field (not supported in v1 API)
     const maxTurns = (CFG.MAX_HISTORY_TURNS || 6) * 2;
     const recentHistory = history.slice(-maxTurns);
 
@@ -125,21 +125,17 @@ QUESTION: ${question}`;
       });
     }
 
-    // Add the current user message
-    contents.push({ role: 'user', parts: [{ text: userPrompt }] });
+    // If no history yet, prepend system context into this first message
+    const fullPrompt = (systemInstruction && history.length === 0)
+      ? systemInstruction + '\n\n---\n\n' + userPrompt
+      : userPrompt;
+
+    contents.push({ role: 'user', parts: [{ text: fullPrompt }] });
 
     const body = {
       contents,
       generationConfig: { temperature: 0.15, maxOutputTokens: 1400 },
     };
-
-    // Add system instruction if provided and it's the first turn
-    if (systemInstruction && history.length === 0) {
-      body.system_instruction = { parts: [{ text: systemInstruction }] };
-    } else if (systemInstruction && history.length > 0) {
-      // Re-inject system context as part of body for models that support it
-      body.system_instruction = { parts: [{ text: systemInstruction }] };
-    }
 
     // Retry on 429
     for (let attempt = 0; attempt <= 2; attempt++) {
