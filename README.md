@@ -19,7 +19,7 @@
 9. [Your session log](#9-your-session-log)
 10. [What happens to your questions](#10-what-happens-to-your-questions)
 11. [Tips for better results](#11-tips-for-better-results)
-
+12. [Frequently asked questions](#12-frequently-asked-questions)
 
 ---
 
@@ -236,7 +236,13 @@ Each entry also has an **↩ Follow-up** button that scrolls you back to the que
 Every question you ask is stored in two places:
 
 1. **Your browser** — visible only to you via the session log. Cleared when you close the browser.
-2. **The project database** — sent to a secure database that only the ontology author (Arghavan) can access via the Admin panel. 
+2. **The project database** — sent to a secure database that only the ontology author (Arghavan) can access via the Admin panel. This includes:
+   - Your question
+   - The coverage result
+   - Any missing concepts identified
+   - The AI answer
+   - Your session ID (a random code — not linked to your name or identity)
+   - The timestamp
 
 **No personal information is collected.** There is no login, no name, no email. Your session ID is a random string generated when you open the page.
 
@@ -244,14 +250,51 @@ The purpose of collecting questions is purely for **ontology validation** — to
 
 ---
 
-## 11. Troubleshoot
+## 11. Tips for better results
 
+**Be specific**
+> ❌ `Tell me about materials`  
+> ✅ `Does a class exist for tracking material shortages per work order?`
+
+**Use domain terminology**
+Terms from the manufacturing process (e.g. *wave soldering*, *AOI*, *work order*, *BOM*, *PCB*) will match better than generic terms.
+
+**If nothing matches, try related terms**
+If `shortage` returns nothing, try `material`, `allocation`, or `issued quantity`.
+
+**Use the similar concept chips**
+The blue chips below the results show what the ontology does have near your query. These are often a good starting point.
+
+**Ask follow-up questions**
+After getting a result, ask `What do you suggest?` or `How is this related to WorkOrder?` — the tool remembers the context.
 
 **If you get a 429 error**
 This means the Gemini API rate limit was hit. Wait 60 seconds and try again. The tool retries automatically.
 
 ---
 
+## 12. Frequently asked questions
+
+**Do I need to know OWL or SPARQL?**  
+No. Write questions in plain English.
+
+**Can I use my own ontology?**  
+Not in this version. The tool is pre-configured for the MOAF-DiT ontology. A custom upload version may be available in future.
+
+**Is my API key safe?**  
+Yes. It is stored only in your browser's local storage and sent directly from your browser to Google's API. It never passes through our server.
+
+**Why does it sometimes say "string-match result"?**  
+This means the Gemini API was unavailable (usually a rate limit). The match was done by word overlap instead of semantic similarity. Results may be less accurate but still useful.
+
+**What does the % match number mean?**  
+It is the similarity score between your question and the matched entity — 100% is a perfect match. See [the technical explanation](https://github.com/Z-Arghavan/AskOntology2#how-matching-works) for details.
+
+**My question was marked ❌ Not covered — does that mean the concept is definitely missing?**  
+Not necessarily. The concept may exist under a different name. Try the similar concept chips, or rephrase your question. If after several attempts it is still not found, it is likely genuinely absent — please submit a proposal.
+
+**Who sees my questions?**  
+Only the ontology author (Arghavan) via the Admin dashboard. Questions are used only to improve the ontology.
 
 ---
 
@@ -260,4 +303,6 @@ This means the Gemini API rate limit was hit. Wait 60 seconds and try again. The
 Contact the project lead: **Arghavan Akbarieh**  
 Repository: [https://github.com/Z-Arghavan/AskOntology2](https://github.com/Z-Arghavan/AskOntology2)
 
+---
 
+*MOAF-DiT Project — Eurostars · UNIVIA · JEOIT · TU/e · KAREL*
