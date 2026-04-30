@@ -1,6 +1,5 @@
-# 📖 User Guide — AskOntology2
-
-**AskOntology2** is an explorative method to validate the **MOAF-DiT ontology** by asking natural-language questions. You do not need to know SPARQL, OWL, or any semantic web technology to use it.
+# How to use:
+**AskOntology** is an explorative method to validate the **MOAF-DiT ontology** by asking natural-language questions. You do not need to know SPARQL, OWL, or any semantic web technology to use it.
 
 > 🔗 **Access the tool:** [https://z-arghavan.github.io/AskOntology2/](https://z-arghavan.github.io/AskOntology2/)
 
