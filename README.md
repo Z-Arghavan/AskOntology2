@@ -1,7 +1,8 @@
 # How to use:
-**AskOntology** is an explorative method to validate the **MOAF-DiT ontology** by asking natural-language questions. You do not need to know SPARQL, OWL, or any semantic web technology to use it.
+**AskOntology** is an explorative method to validate an ontology. It is proposd by me, Arghavan Akbarieh. It is not tested. So, now, I am testing it on the **MOAF-DiT ontology** for the MOAFDiT project. The idea is to validate, optimise and expand the ontollgy through RAG and Sub-graph extension method. 
+A user of the ontology, who is disjoint fron the ontology developer, is the target user of this method. By asking natural-language questions from the schema (not the knowledge graph), the method helps users to check what classes or relationships exist, and if not, they an then propose those. In this way, the ontology will be exanded and compeleted through user requests.
 
-> 🔗 **Access the tool:** [https://z-arghavan.github.io/AskOntology2/](https://z-arghavan.github.io/AskOntology2/)
+> 🔗 **Link:** [https://z-arghavan.github.io/AskOntology2/](https://z-arghavan.github.io/AskOntology2/)
 
 ---
 
