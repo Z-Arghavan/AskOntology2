@@ -6,22 +6,6 @@ A user of the ontology, who is disjoint fron the ontology developer, is the targ
 
 ---
 
-## Table of Contents
-
-1. [What this tool does](#1-what-this-tool-does)
-2. [Before you start — API key](#2-before-you-start--api-key)
-3. [Step-by-step setup](#3-step-by-step-setup)
-4. [Asking questions](#4-asking-questions)
-5. [Understanding the results](#5-understanding-the-results)
-6. [Follow-up questions and conversation memory](#6-follow-up-questions-and-conversation-memory)
-7. [Adding your suggestion or opinion](#7-adding-your-suggestion-or-opinion)
-8. [Proposing a missing concept](#8-proposing-a-missing-concept)
-9. [Your session log](#9-your-session-log)
-10. [What happens to your questions](#10-what-happens-to-your-questions)
-11. [Tips for better results](#11-tips-for-better-results)
-12. [Frequently asked questions](#12-frequently-asked-questions)
-
----
 
 ## 1. What this tool does
 
@@ -46,11 +30,10 @@ The tool uses **Google Gemini** to understand your questions and generate answer
 1. Go to [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
 2. Sign in with your Google account
 3. Click **Create API key**
-4. Copy the key — it looks like `AIzaSyAbc123xyz...`
+
 
 > The free tier allows up to **15 requests per minute** and **1,500 per day** — more than enough for normal use.  
-> Your key is saved only in **your own browser**. It is never sent to our server or stored anywhere else.
-
+> Your key is saved only in **your own browser**.
 ---
 
 ## 3. setup
@@ -67,11 +50,7 @@ Your key is stored in your browser's local storage and will be remembered next t
 
 ### Step 2 Upload the ontology
 
-- Click the **dotted upload box** (or drag and drop a file onto it)
-- Select the MOAF-DiT ontology file: **`ontology.ttl`**
 - The tool parses the file and shows a summary: number of classes, properties, individuals
-
-> 📎 If you do not have the ontology file, ask the project lead (Arghavan) for the latest version, or download it from the [MOAF-DiT repository](https://github.com/Z-Arghavan/MOAF-DiT).
 
 ### Step 3 Build the semantic index
 
